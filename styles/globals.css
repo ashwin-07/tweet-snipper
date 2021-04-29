@@ -14,3 +14,16 @@ a {
 * {
   box-sizing: border-box;
 }
+
+footer {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+mark.blue {
+  color: #1DA1F2;
+  background: none;
+}

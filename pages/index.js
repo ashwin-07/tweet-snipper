@@ -1,65 +1,83 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
+import { Text, Input, Box, Center, InputGroup, InputRightElement, Flex, Spacer } from "@chakra-ui/react"
+import { Search2Icon } from "@chakra-ui/icons"
+import axios from 'axios'
+import { server } from '../config'
+import { useState } from 'react'
+import Editor from '../components/Editor'
+
 
 export default function Home() {
+
+  const [tweetDetails, setTweetDetails] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
+
+  const getTweetDetails = async (elem) => {
+    elem.preventDefault();
+    //TODO use regex match to validate and extract tweet ID
+    const url = elem.target.elements.url.value
+    const id = url.split('/')[5]
+    try {
+      setLoading(true)
+      const {data}= await axios.get(`/api/tweet/${id}`)
+      console.log("axiso res")
+      console.log(data)
+      if (data.success) {
+        setError(false)
+        setTweetDetails(data.tweetDetails)
+      }
+      else {
+        setError(true);
+      }
+      setLoading(false)
+    }
+    catch (ex) {
+      setLoading(false)
+      setError(true)
+      setTweetDetails(null)
+    }
+  }
+
   return (
-    <div className={styles.container}>
+    <div className={styles.main}>
       <Head>
-        <title>Create Next App</title>
+        <title>TweetSnip</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+      <Box px='4' align='center'>
+        <Text fontSize={{ base: "30px", md: "45px", lg: "50px" }} className='title i'>Capture <mark className="blue">tweets</mark> into customizable images.</Text>
+      </Box>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+      <Box my="12" align='center'>
+        <form onSubmit={getTweetDetails} autoComplete='off'>
+          <InputGroup maxW='90vw'>
+            <Input width='50vw' variant="outline" size="lg" placeholder="https://twitter.com/CoolestAccEver/status/1384562769786073098?s=20" name='url' />
+            <InputRightElement>
+              <button type='submit'>
+                <Search2Icon></Search2Icon>
+              </button>
+            </InputRightElement>
+          </InputGroup>
+        </form>
+      </Box>
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+      <Editor loading={loading} error={error} tweetDetails={tweetDetails}></Editor>
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+      {/* <Box w={['90vw','90vw','70vw','50vw']}>
+        <Flex color="white" 
+        justify='center'
+        direction={{base:'column', sm:'column', md:'row', lg:'row', }}>
+          <Box w="50px" h="30" border="black.500" bg="red.100" />
+          <Spacer />
+          <Box w="50px" h="30" bg="red.200" />
+          <Spacer />
+          <Box w="50px" h="30" bg="red.500" />
+        </Flex>
+      </Box> */}
     </div>
   )
 }
