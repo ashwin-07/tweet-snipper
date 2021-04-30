@@ -7,7 +7,6 @@ import { server } from '../config'
 import { useState } from 'react'
 import Editor from '../components/Editor'
 
-
 export default function Home() {
 
   const [tweetDetails, setTweetDetails] = useState(null)
@@ -65,19 +64,6 @@ export default function Home() {
       </Box>
 
       <Editor loading={loading} error={error} tweetDetails={tweetDetails}></Editor>
-
-
-      {/* <Box w={['90vw','90vw','70vw','50vw']}>
-        <Flex color="white" 
-        justify='center'
-        direction={{base:'column', sm:'column', md:'row', lg:'row', }}>
-          <Box w="50px" h="30" border="black.500" bg="red.100" />
-          <Spacer />
-          <Box w="50px" h="30" bg="red.200" />
-          <Spacer />
-          <Box w="50px" h="30" bg="red.500" />
-        </Flex>
-      </Box> */}
     </div>
   )
 }
